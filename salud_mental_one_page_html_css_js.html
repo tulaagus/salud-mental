@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>¿Cuidas tu salud mental?</title>
+  <meta name="description" content="Página informativa y práctica sobre salud mental: qué es, consecuencias de no atenderla, qué podés hacer, ejercicio de respiración y líneas de ayuda. Todo en un solo archivo." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Sour+Gummy:wght@700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg1:#0b1020;           /* degradado de fondo */
+      --bg2:#1f2a44;
+      --card:#101628cc;        /* vidrio */
+      --line:#2b3a60;
+      --text:#f5f7ff;          /* texto principal */
+      --muted:#cbd3ffcc;       /* texto secundario */
+      --accent:#66e9c8;        /* acento suave */
+      --accent-2:#a8b0ff;      /* segundo acento */
+      --danger:#ff5d7a;        /* para CTA de ayuda */
+      --radius:18px;
+      --shadow:0 20px 60px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.04);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; background:linear-gradient(180deg,var(--bg1),var(--bg2));
+      color:var(--text); font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+    }
+    a{color:inherit}
+
+    /* Layout */
+    .wrap{max-width:1000px; margin-inline:auto; padding:24px 20px 80px}
+
+    header.hero{
+      display:grid; grid-template-columns:1fr 320px; gap:24px; align-items:center;
+      padding-block:24px 10px;
+    }
+    @media (max-width:860px){ header.hero{grid-template-columns:1fr; text-align:center} }
+
+    .kicker{font:600 14px/1 Inter; letter-spacing:.12em; text-transform:uppercase; color:var(--accent)}
+    h1{font:800 clamp(28px,5.6vw,56px)/1.05 "Sour Gummy", Inter, system-ui; margin:8px 0 12px}
+    .lead{color:var(--muted); font-size:clamp(16px,1.9vw,18px)}
+
+    .card{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow);}
+    .card.pad{padding:20px}
+
+    .brain-svg{width:100%; height:auto; display:block}
+    .pill{display:inline-flex; align-items:center; gap:10px; padding:10px 14px; border-radius:999px; background:#0f1626; border:1px solid var(--line); color:var(--muted)}
+
+    /* Section blocks */
+    section{margin-top:22px}
+    section h2{font:800 24px/1.15 "Sour Gummy"; margin:0 0 12px}
+    section p{margin:0 0 10px; color:var(--muted)}
+
+    .grid{display:grid; gap:14px}
+    .grid.cols-2{grid-template-columns:1fr 1fr}
+    @media (max-width:860px){ .grid.cols-2{grid-template-columns:1fr} }
+
+    .list{margin:0; padding:0; list-style:none}
+    .list li{display:flex; gap:10px; padding:10px 12px; border:1px solid var(--line); border-radius:12px; background:rgba(255,255,255,.02)}
+    .dot{width:10px; height:10px; border-radius:50%; background:var(--accent-2); margin-top:6px; flex:0 0 auto}
+
+    /* Breathing trainer */
+    .breath{display:grid; grid-template-columns:300px 1fr; gap:20px; align-items:center}
+    @media (max-width:860px){ .breath{grid-template-columns:1fr; text-align:center} }
+    .circle-wrap{display:grid; place-items:center; aspect-ratio:1; width:min(300px,70vw); margin-inline:auto}
+    .circle{width:200px; aspect-ratio:1; border-radius:50%; background:radial-gradient(circle at 50% 45%, rgba(168,176,255,.25), rgba(102,233,200,.25)); border:2px solid var(--accent-2); box-shadow:0 0 30px rgba(168,176,255,.32), inset 0 0 40px rgba(102,233,200,.18); transform:scale(0.9); transition:transform 1s ease}
+    .cue{font:800 26px/1.1 "Sour Gummy"; margin:8px 0 2px}
+    .sub{color:var(--muted); font-size:14px}
+    .controls{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px}
+    .btn{appearance:none; border:1px solid var(--line); background:#0f1626; color:var(--text); padding:10px 14px; border-radius:12px; cursor:pointer; font-weight:600}
+    .btn.primary{background:var(--accent-2); color:#0b0f1c; border:0}
+    .btn.danger{background:var(--danger); border:0}
+
+    /* Help block */
+    .help{display:flex; flex-wrap:wrap; gap:10px; align-items:center}
+    .help .cta{display:inline-flex; align-items:center; gap:10px; padding:12px 16px; border-radius:12px; background:var(--danger); color:#fff; font-weight:800; text-decoration:none}
+    .help small{color:var(--muted)}
+
+    footer{margin-top:26px; padding:16px; text-align:center; color:#a9b3e6}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="hero">
+      <div>
+        <div class="kicker">CUIDADO Y BIENESTAR</div>
+        <h1>¿Cuidás tu salud mental?</h1>
+        <p class="lead">La salud mental es un <strong>estado de bienestar</strong> que te permite afrontar el estrés de la vida, <strong>desarrollar tus habilidades</strong>, aprender y trabajar adecuadamente, y <strong>contribuir a tu comunidad</strong>.</p>
+        <div class="pill" style="margin-top:10px">💡 Real y tratable • Pedir ayuda es un acto de valentía</div>
+      </div>
+      <div class="card pad">
+        <!-- SVG decorativo simple (sin dependencias) -->
+        <svg class="brain-svg" viewBox="0 0 300 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <linearGradient id="g" x1="0" x2="1">
+              <stop offset="0" stop-color="#a8b0ff" />
+              <stop offset="1" stop-color="#66e9c8" />
+            </linearGradient>
+          </defs>
+          <g fill="none" stroke="url(#g)" stroke-width="3" opacity="0.95">
+            <path d="M150 200c-38 0-70-30-70-68 0-21 11-41 28-53 1-22 19-39 42-39 9 0 17 3 24 7 7-10 19-17 33-17 22 0 40 17 41 39 18 12 29 31 29 52 0 38-32 69-70 69h-57z"/>
+            <path d="M103 126c12-8 29-13 47-13s35 5 47 13" opacity=".8"/>
+            <path d="M150 114v86" opacity=".6"/>
+            <circle cx="150" cy="84" r="10" />
+            <path d="M185 70c10-12 25-12 35-2" opacity=".6"/>
+            <path d="M120 70c-10-12-25-12-35-2" opacity=".6"/>
+            <path d="M120 40c10 15 20 25 30 30"/>
+            <path d="M180 40c-10 15-20 25-30 30"/>
+            <path d="M150 35c-15-22-30-22-45 0M150 35c15-22 30-22 45 0"/>
+          </g>
+        </svg>
+      </div>
+    </header>
+
+    <section class="grid cols-2">
+      <article class="card pad">
+        <h2>¿Qué es la salud mental?</h2>
+        <p>Es el equilibrio que nos ayuda a <strong>sentir, pensar y actuar</strong> de forma saludable. Influye en cómo manejamos el estrés, cómo nos relacionamos con los demás y cómo tomamos decisiones.</p>
+        <p>Los problemas de salud mental son <strong>condiciones médicas reales</strong> y, con tratamiento y apoyo, <strong>son tratables</strong>.</p>
+      </article>
+      <article class="card pad">
+        <h2>Si no la atendemos…</h2>
+        <ul class="list">
+          <li><span class="dot"></span><div><strong>Sufrimiento intenso</strong> o dolor emocional y psicológico significativo.</div></li>
+          <li><span class="dot"></span><div><strong>Discapacidad</strong>: pérdida de la capacidad para trabajar, estudiar o participar plenamente en la vida social.</div></li>
+          <li><span class="dot"></span><div><strong>Riesgo de autolesiones y suicidio</strong>: algunos trastornos aumentan el riesgo. Buscar ayuda temprana reduce ese riesgo.</div></li>
+          <li><span class="dot"></span><div>Afecta cómo nos sentimos, pensamos y actuamos; y <strong>cómo tomamos decisiones</strong>.</div></li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="grid cols-2">
+      <article class="card pad">
+        <h2>Señales de alerta (comunes)</h2>
+        <ul class="list">
+          <li><span class="dot"></span><div>Cambios persistentes en el ánimo, irritabilidad o tristeza.</div></li>
+          <li><span class="dot"></span><div>Dificultades para dormir o dormir demasiado.</div></li>
+          <li><span class="dot"></span><div>Preocupación/ansiedad constante, ataques de pánico.</div></li>
+          <li><span class="dot"></span><div>Aislamiento social, pérdida del interés por actividades.</div></li>
+          <li><span class="dot"></span><div>Consumo problemático de alcohol u otras sustancias.</div></li>
+        </ul>
+      </article>
+      <article class="card pad">
+        <h2>¿Qué podés hacer hoy?</h2>
+        <ul class="list">
+          <li><span class="dot"></span><div>Hablar con alguien de confianza; <strong>pedir ayuda está bien</strong>.</div></li>
+          <li><span class="dot"></span><div>Movimiento suave 10–20 min: caminata, estiramientos.</div></li>
+          <li><span class="dot"></span><div>Rutina de sueño: misma hora para dormir/despertar.</div></li>
+          <li><span class="dot"></span><div>Respiración guiada 5 minutos (mirá el entrenador 👇).</div></li>
+          <li><span class="dot"></span><div>Consultar con profesionales de salud cuando sea necesario.</div></li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="card pad">
+      <div class="breath">
+        <div class="circle-wrap">
+          <div class="circle" id="breathCircle" aria-hidden="true"></div>
+        </div>
+        <div>
+          <h2>Entrenador de respiración</h2>
+          <p class="sub">Ciclo sugerido 4 · 2 · 6 (inhalá 4s – sostené 2s – exhalá 6s). Repetilo de 3 a 5 minutos.</p>
+          <div id="cueText" class="cue">Preparado</div>
+          <div class="controls">
+            <button class="btn primary" id="startBtn">Iniciar</button>
+            <button class="btn" id="pauseBtn" disabled>Pausar</button>
+            <button class="btn" id="resetBtn" disabled>Reiniciar</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card pad">
+      <h2>Recursos y líneas de ayuda</h2>
+      <div class="help">
+        <a class="cta" id="helplineLink" href="tel:08002225462">☎️ 0800-222-5462</a>
+        <small>Si estás en peligro inmediato o pensás en hacerte daño, buscá ayuda de emergencia en tu zona. Este número es personalizable.</small>
+      </div>
+    </section>
+
+    <footer>
+      Hecho con ♥ para informar y acompañar. Actualizá el número de ayuda según tu país/ciudad.
+    </footer>
+  </div>
+
+  <script>
+    // --- Parámetros editables (podés cambiarlos sin tocar el HTML) ---
+    const HELPLINE_NUMBER = "0800-222-5462"; // reemplazá por el que quieras mostrar
+    const HELPLINE_TEL = "08002225462";      // versión sin guiones para el enlace tel:
+
+    // Ciclo de respiración (segundos)
+    const DURATIONS = { inhale: 4, hold: 2, exhale: 6 };
+
+    // Actualiza el CTA con el número elegido
+    const helpline = document.getElementById('helplineLink');
+    if (helpline){
+      helpline.textContent = `☎️ ${HELPLINE_NUMBER}`;
+      helpline.href = `tel:${HELPLINE_TEL}`;
+    }
+
+    // Entrenador de respiración
+    const circle = document.getElementById('breathCircle');
+    const cue = document.getElementById('cueText');
+    const startBtn = document.getElementById('startBtn');
+    const pauseBtn = document.getElementById('pauseBtn');
+    const resetBtn = document.getElementById('resetBtn');
+
+    let timerId = null;
+    let phase = 'ready';
+    let paused = false;
+
+    function setCue(text){ cue.textContent = text; }
+    function scaleTo(val){ circle.style.transform = `scale(${val})`; }
+
+    function runPhase(name, duration, next){
+      phase = name; setCue(name === 'inhale' ? 'Inhalá' : name === 'hold' ? 'Sostené' : 'Exhalá');
+      // animación aproximada: grande al inhalar, medio al sostener, pequeño al exhalar
+      if(name === 'inhale') scaleTo(1.1); else if(name==='hold') scaleTo(1.02); else scaleTo(0.85);
+      const ms = duration * 1000;
+      let start = performance.now();
+      function step(now){
+        if (paused) return; // al pausar, detenemos el ciclo
+        const elapsed = now - start;
+        if (elapsed >= ms){ next(); return; }
+        timerId = requestAnimationFrame(step);
+      }
+      timerId = requestAnimationFrame(step);
+    }
+
+    function startCycle(){
+      paused = false; startBtn.disabled = true; pauseBtn.disabled = false; resetBtn.disabled = false;
+      const loop = ()=> runPhase('inhale', DURATIONS.inhale, ()=> runPhase('hold', DURATIONS.hold, ()=> runPhase('exhale', DURATIONS.exhale, loop)));
+      loop();
+    }
+
+    function pauseCycle(){ paused = true; pauseBtn.disabled = true; startBtn.disabled = false; setCue('Pausado'); }
+    function resetCycle(){ paused = true; cancelAnimationFrame(timerId); scaleTo(0.9); setCue('Preparado'); startBtn.disabled = false; pauseBtn.disabled = true; resetBtn.disabled = true; }
+
+    startBtn.addEventListener('click', ()=>{ if(phase==='ready' || paused) startCycle(); });
+    pauseBtn.addEventListener('click', pauseCycle);
+    resetBtn.addEventListener('click', resetCycle);
+  </script>
+</body>
+</html>
