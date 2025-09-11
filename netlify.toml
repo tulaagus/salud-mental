@@ -1,3 +1,2 @@
 [build]
-# Sitio estático sin comando de build
 publish = "."
