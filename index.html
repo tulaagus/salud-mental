@@ -8,6 +8,10 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Sour+Gummy:wght@700;800&display=swap" rel="stylesheet">
+
+  <!-- Preload del audio local -->
+  <link rel="preload" as="audio" href="audio/respiracion-426.mp3">
+
   <style>
     :root{
       --bg1:#0b1020;           /* degradado de fondo */
@@ -63,17 +67,26 @@
     .list li{display:flex; gap:10px; padding:10px 12px; border:1px solid var(--line); border-radius:12px; background:rgba(255,255,255,.02)}
     .dot{width:10px; height:10px; border-radius:50%; background:var(--accent-2); margin-top:6px; flex:0 0 auto}
 
-    /* Breathing trainer */
-    .breath{display:grid; grid-template-columns:300px 1fr; gap:20px; align-items:center}
-    @media (max-width:860px){ .breath{grid-template-columns:1fr; text-align:center} }
-    .circle-wrap{display:grid; place-items:center; aspect-ratio:1; width:min(300px,70vw); margin-inline:auto}
-    .circle{width:200px; aspect-ratio:1; border-radius:50%; background:radial-gradient(circle at 50% 45%, rgba(168,176,255,.25), rgba(102,233,200,.25)); border:2px solid var(--accent-2); box-shadow:0 0 30px rgba(168,176,255,.32), inset 0 0 40px rgba(102,233,200,.18); transform:scale(0.9); transition:transform 1s ease}
-    .cue{font:800 26px/1.1 "Sour Gummy"; margin:8px 0 2px}
-    .sub{color:var(--muted); font-size:14px}
-    .controls{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px}
-    .btn{appearance:none; border:1px solid var(--line); background:#0f1626; color:var(--text); padding:10px 14px; border-radius:12px; cursor:pointer; font-weight:600}
-    .btn.primary{background:var(--accent-2); color:#0b0f1c; border:0}
-    .btn.danger{background:var(--danger); border:0}
+    /* === NUEVO: Entrenador de respiración (reemplazo) === */
+    .breath-ui{
+      display:grid; gap:1rem; place-items:center; margin:4px 0 2px;
+      text-align:center;
+    }
+    .breath-ui .circle{
+      --size: 200px;
+      width:var(--size); height:var(--size); border-radius:50%;
+      background: radial-gradient( circle at 30% 30%, rgba(168,176,255,.35), rgba(102,233,200,.3) 60%, rgba(29,95,86,.9) );
+      box-shadow: 0 10px 35px rgba(0,0,0,.25), inset 0 0 40px rgba(255,255,255,.15);
+      transform: scale(1); transition: transform 4s ease-in-out;
+    }
+    .breath-ui .caption{ font-size:1.15rem; opacity:.9 }
+    .breath-ui .controls{ display:flex; gap:.75rem; flex-wrap:wrap; justify-content:center }
+    .breath-ui .controls button{
+      padding:.6rem 1rem; border:0; border-radius:.6rem; cursor:pointer;
+      background:#1fa88b; color:#fff; font-weight:600; box-shadow:0 4px 14px rgba(31,168,139,.3);
+    }
+    .breath-ui .controls button#btn-stop{ background:#3b4a58 }
+    .breath-ui .vol{ display:flex; align-items:center; gap:.5rem; font-size:.9rem; opacity:.85 }
 
     /* Help block */
     .help{display:flex; flex-wrap:wrap; gap:10px; align-items:center}
@@ -93,7 +106,7 @@
         <div class="pill" style="margin-top:10px">💡 Real y tratable • Pedir ayuda es un acto de valentía</div>
       </div>
       <div class="card pad">
-        <!-- SVG decorativo simple (sin dependencias) -->
+        <!-- SVG decorativo simple -->
         <svg class="brain-svg" viewBox="0 0 300 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <defs>
             <linearGradient id="g" x1="0" x2="1">
@@ -156,20 +169,25 @@
       </article>
     </section>
 
+    <!-- === REEMPLAZO: Entrenador de respiración nuevo === -->
     <section class="card pad">
-      <div class="breath">
-        <div class="circle-wrap">
-          <div class="circle" id="breathCircle" aria-hidden="true"></div>
+      <h2>Entrenador de respiración</h2>
+      <p class="lead" style="color:var(--muted); font-size:14px">Ciclo 4 · 2 · 6 (inhalá 4s – sostené 2s – exhalá 6s). Repetilo 3 a 5 minutos.</p>
+
+      <!-- AUDIO oculto (archivo local del repo) -->
+      <audio id="breath-audio" src="audio/respiracion-426.mp3" preload="auto"></audio>
+
+      <div class="breath-ui">
+        <div class="circle" id="breath-circle" aria-hidden="true"></div>
+        <div class="caption" id="breath-caption" aria-live="polite">Listo para empezar</div>
+        <div id="breath-timer" aria-hidden="true" style="opacity:.8"></div>
+        <div class="controls">
+          <button id="btn-start">Iniciar</button>
+          <button id="btn-stop">Detener</button>
         </div>
-        <div>
-          <h2>Entrenador de respiración</h2>
-          <p class="sub">Ciclo sugerido 4 · 2 · 6 (inhalá 4s – sostené 2s – exhalá 6s). Repetilo de 3 a 5 minutos.</p>
-          <div id="cueText" class="cue">Preparado</div>
-          <div class="controls">
-            <button class="btn primary" id="startBtn">Iniciar</button>
-            <button class="btn" id="pauseBtn" disabled>Pausar</button>
-            <button class="btn" id="resetBtn" disabled>Reiniciar</button>
-          </div>
+        <div class="vol">
+          Volumen
+          <input id="vol" type="range" min="0" max="1" step="0.01" value="0.35" />
         </div>
       </div>
     </section>
@@ -183,66 +201,126 @@
     </section>
 
     <footer>
-      Hecho con ♥ para informar y acompañar. Trabajo realizado por los alumnos 3ro 2da 
+      Hecho con ♥ para informar y acompañar. Trabajo realizado por los alumnos 3ro 2da
     </footer>
   </div>
 
   <script>
-    // --- Parámetros editables (podés cambiarlos sin tocar el HTML) ---
-    const HELPLINE_NUMBER = "0800-222-5462"; // reemplazá por el que quieras mostrar
-    const HELPLINE_TEL = "08002225462";      // versión sin guiones para el enlace tel:
-
-    // Ciclo de respiración (segundos)
-    const DURATIONS = { inhale: 4, hold: 2, exhale: 6 };
-
-    // Actualiza el CTA con el número elegido
+    // --- CTA Teléfono (igual que antes, editable) ---
+    const HELPLINE_NUMBER = "0800-222-5462";
+    const HELPLINE_TEL = "08002225462";
     const helpline = document.getElementById('helplineLink');
     if (helpline){
       helpline.textContent = `☎️ ${HELPLINE_NUMBER}`;
       helpline.href = `tel:${HELPLINE_TEL}`;
     }
 
-    // Entrenador de respiración
-    const circle = document.getElementById('breathCircle');
-    const cue = document.getElementById('cueText');
-    const startBtn = document.getElementById('startBtn');
-    const pauseBtn = document.getElementById('pauseBtn');
-    const resetBtn = document.getElementById('resetBtn');
+    // === Respiración 4–2–6 con audio local ===
+    const DUR = { inhale: 4000, hold: 2000, exhale: 6000 };
+    const TOTAL = DUR.inhale + DUR.hold + DUR.exhale;
 
-    let timerId = null;
-    let phase = 'ready';
-    let paused = false;
+    const circle   = document.getElementById('breath-circle');
+    const caption  = document.getElementById('breath-caption');
+    const timerEl  = document.getElementById('breath-timer');
+    const btnStart = document.getElementById('btn-start');
+    const btnStop  = document.getElementById('btn-stop');
+    const audioEl  = document.getElementById('breath-audio');
+    const volInput = document.getElementById('vol');
 
-    function setCue(text){ cue.textContent = text; }
-    function scaleTo(val){ circle.style.transform = `scale(${val})`; }
+    let loopTimer = null, timeouts = [];
 
-    function runPhase(name, duration, next){
-      phase = name; setCue(name === 'inhale' ? 'Inhalá' : name === 'hold' ? 'Sostené' : 'Exhalá');
-      // animación aproximada: grande al inhalar, medio al sostener, pequeño al exhalar
-      if(name === 'inhale') scaleTo(1.1); else if(name==='hold') scaleTo(1.02); else scaleTo(0.85);
-      const ms = duration * 1000;
-      let start = performance.now();
-      function step(now){
-        if (paused) return; // al pausar, detenemos el ciclo
-        const elapsed = now - start;
-        if (elapsed >= ms){ next(); return; }
-        timerId = requestAnimationFrame(step);
+    function schedule(ms, fn){
+      const id = setTimeout(fn, ms); timeouts.push(id);
+    }
+    function clearTimers(){
+      timeouts.forEach(clearTimeout); timeouts = [];
+      if (loopTimer) { clearInterval(loopTimer); loopTimer = null; }
+    }
+
+    function countdown(msTotal) {
+      const start = performance.now();
+      function frame(t) {
+        const elapsed = t - start;
+        const remain = Math.max(0, msTotal - elapsed);
+        timerEl.textContent = (remain/1000).toFixed(1) + 's';
+        if (remain > 0) requestAnimationFrame(frame);
       }
-      timerId = requestAnimationFrame(step);
+      requestAnimationFrame(frame);
     }
 
-    function startCycle(){
-      paused = false; startBtn.disabled = true; pauseBtn.disabled = false; resetBtn.disabled = false;
-      const loop = ()=> runPhase('inhale', DURATIONS.inhale, ()=> runPhase('hold', DURATIONS.hold, ()=> runPhase('exhale', DURATIONS.exhale, loop)));
-      loop();
+    function playCycleUI(){
+      // Inhalar
+      circle.style.transitionDuration = (DUR.inhale/1000)+'s';
+      circle.style.transform = 'scale(1.35)';
+      caption.textContent = 'Inhalar — 4s';
+      countdown(DUR.inhale);
+
+      // Sostener
+      schedule(DUR.inhale, () => {
+        caption.textContent = 'Sostener — 2s';
+        countdown(DUR.hold);
+      });
+
+      // Exhalar
+      schedule(DUR.inhale + DUR.hold, () => {
+        circle.style.transitionDuration = (DUR.exhale/1000)+'s';
+        circle.style.transform = 'scale(1.00)';
+        caption.textContent = 'Exhalar — 6s';
+        countdown(DUR.exhale);
+      });
     }
 
-    function pauseCycle(){ paused = true; pauseBtn.disabled = true; startBtn.disabled = false; setCue('Pausado'); }
-    function resetCycle(){ paused = true; cancelAnimationFrame(timerId); scaleTo(0.9); setCue('Preparado'); startBtn.disabled = false; pauseBtn.disabled = true; resetBtn.disabled = true; }
+    async function startBreathing(){
+      try {
+        audioEl.loop = true;                      // repite mientras practiques
+        audioEl.volume = parseFloat(volInput.value || '0.35');
+        await audioEl.play();
+      } catch (e){
+        console.warn('Autoplay bloqueado:', e);
+        caption.textContent = 'Toca Iniciar nuevamente para habilitar audio';
+      }
 
-    startBtn.addEventListener('click', ()=>{ if(phase==='ready' || paused) startCycle(); });
-    pauseBtn.addEventListener('click', pauseCycle);
-    resetBtn.addEventListener('click', resetCycle);
+      clearTimers();
+      playCycleUI();
+      loopTimer = setInterval(playCycleUI, TOTAL);
+      btnStart.disabled = true;
+    }
+
+    function stopBreathing(){
+      clearTimers();
+      audioEl.pause();
+      audioEl.currentTime = 0; // vuelve al inicio
+      btnStart.disabled = false;
+      caption.textContent = 'Pausa';
+      circle.style.transitionDuration = '0.6s';
+      circle.style.transform = 'scale(1)';
+      timerEl.textContent = '';
+    }
+
+    // eventos
+    btnStart.addEventListener('click', startBreathing);
+    btnStop .addEventListener('click',  stopBreathing);
+    volInput.addEventListener('input',  () => {
+      audioEl.volume = parseFloat(volInput.value);
+    });
+
+    // Accesibilidad básica con teclado
+    document.addEventListener('keydown', (e) => {
+      if (e.key === ' ') {
+        e.preventDefault();
+        if (btnStart.disabled) { btnStop.click(); } else { btnStart.click(); }
+      }
+      if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        volInput.value = Math.min(1, parseFloat(volInput.value) + 0.05).toFixed(2);
+        volInput.dispatchEvent(new Event('input'));
+      }
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        volInput.value = Math.max(0, parseFloat(volInput.value) - 0.05).toFixed(2);
+        volInput.dispatchEvent(new Event('input'));
+      }
+    });
   </script>
 </body>
 </html>
